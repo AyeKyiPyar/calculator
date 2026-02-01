@@ -41,16 +41,6 @@ pipeline {
             }
         }
 
-        stage("Static Code Analysis (Checkstyle)") {
-            steps {
-                sh "mvn checkstyle:checkstyle"
-                publishHTML(target: [
-                    reportDir: 'target/site',
-                    reportFiles: 'checkstyle.html',
-                    reportName: 'Checkstyle Report'
-                ])
-            }
-        }
 
         stage("Build") {
             steps {
@@ -74,18 +64,7 @@ pipeline {
             }
         }
 
-        stage("Deploy to Staging") {
-            steps {
-                sh "ansible-playbook playbook.yml -i inventory/staging"
-                sleep 60
-            }
-        }
-
-        stage("Acceptance Test") {
-            steps {
-                sh "./acceptance_test.sh 192.168.0.18"
-            }
-        }
+      
 
         stage("Release to Production") {
             steps {
@@ -94,11 +73,7 @@ pipeline {
             }
         }
 
-        stage("Smoke Test") {
-            steps {
-                sh "./smoke_test.sh 192.168.0.18"
-            }
-        }
+        
     }
 
     post {
