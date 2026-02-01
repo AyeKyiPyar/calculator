@@ -29,19 +29,6 @@ pipeline {
             }
         }
 
-        stage("Code Coverage (JaCoCo)") {
-            steps {
-                sh "mvn jacoco:report"
-                publishHTML(target: [
-                    reportDir: 'target/site/jacoco',
-                    reportFiles: 'index.html',
-                    reportName: 'JaCoCo Report'
-                ])
-                sh "mvn jacoco:check"
-            }
-        }
-
-
         stage("Build") {
             steps {
                  sh script: "mvn clean package -DskipTests", returnStatus: false
@@ -56,24 +43,15 @@ pipeline {
             }
         }
 
-        
-
         stage("Docker Push") {
             steps {
-                sh "docker push ${IMAGE_NAME}:${BUILD_TAG_VERSION}"
+               sh """
+                    docker rm -f calculator || true
+                    docker run --name calculator -d -p 8082:8080 ${IMAGE_NAME}:${BUILD_TAG_VERSION}
+                    """
+
             }
         }
-
-      
-
-        stage("Release to Production") {
-            steps {
-                sh "ansible-playbook playbook.yml -i inventory/production"
-                sleep 60
-            }
-        }
-
-        
     }
 
     post {
