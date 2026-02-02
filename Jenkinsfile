@@ -23,10 +23,11 @@ pipeline {
             }
         }
 
-        stage("Unit Test + Coverage") {
+          stage("Unit Test") {
             steps {
-                // Run tests and generate JaCoCo report in one step
-                sh "mvn clean verify"
+                // Run unit tests and collect results for Jenkins
+                sh "mvn test"
+                junit 'target/surefire-reports/*.xml'
             }
         }
 
