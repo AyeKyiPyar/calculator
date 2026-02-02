@@ -23,24 +23,16 @@ pipeline {
             }
         }
 
-        stage("Unit Test") {
+        stage("Unit Test + Coverage") {
             steps {
-                sh "mvn test"
+                // Run tests and generate JaCoCo report in one step
+                sh "mvn clean verify"
             }
         }
-        // stage("Code Coverage (JaCoCo)") {
-        //     steps {
-        //         sh "mvn jacoco:report"
-        //         publishHTML(target: [
-        //             reportDir: 'target/site/jacoco',
-        //             reportFiles: 'index.html',
-        //             reportName: 'JaCoCo Report'
-        //         ])
-        //         sh "mvn jacoco:check"
-        //     }
-        // }
+
         stage('JaCoCo Report') {
             steps {
+                // Publish JaCoCo HTML report in Jenkins
                 publishHTML([
                     allowMissing: false,
                     alwaysLinkToLastBuild: true,
@@ -52,9 +44,10 @@ pipeline {
             }
         }
 
-        stage("Build") {
+        stage("Build Jar") {
             steps {
-                 sh script: "mvn clean package -DskipTests", returnStatus: false
+                // Package without cleaning to avoid deleting reports
+                sh "mvn package -DskipTests"
             }
         }
 
@@ -66,13 +59,13 @@ pipeline {
             }
         }
 
-        stage("Docker Push") {
+        stage("Docker Deploy") {
             steps {
-               sh """
-                    docker rm -f calculator || true
-                    docker run --name calculator -d -p 8082:8080 ${IMAGE_NAME}:${BUILD_TAG_VERSION}
-                    """
-
+                // Stop old container if exists, then run new one
+                sh """
+                docker rm -f ${IMAGE_NAME} || true
+                docker run --name ${IMAGE_NAME} -d -p 8082:8080 ${IMAGE_NAME}:${BUILD_TAG_VERSION}
+                """
             }
         }
     }
