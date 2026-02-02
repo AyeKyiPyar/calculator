@@ -28,15 +28,27 @@ pipeline {
                 sh "mvn test"
             }
         }
-        stage("Code Coverage (JaCoCo)") {
+        // stage("Code Coverage (JaCoCo)") {
+        //     steps {
+        //         sh "mvn jacoco:report"
+        //         publishHTML(target: [
+        //             reportDir: 'target/site/jacoco',
+        //             reportFiles: 'index.html',
+        //             reportName: 'JaCoCo Report'
+        //         ])
+        //         sh "mvn jacoco:check"
+        //     }
+        // }
+        stage('JaCoCo Report') {
             steps {
-                sh "mvn jacoco:report"
-                publishHTML(target: [
+                publishHTML([
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
                     reportDir: 'target/site/jacoco',
                     reportFiles: 'index.html',
-                    reportName: 'JaCoCo Report'
+                    reportName: 'JaCoCo Coverage'
                 ])
-                sh "mvn jacoco:check"
             }
         }
 
