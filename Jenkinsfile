@@ -97,6 +97,9 @@ pipeline {
         }
         failure {
             echo "❌ Maven CI/CD Pipeline failed"
+            mail to: 'ayekyipyarshwe@gmail.com',
+             subject: "FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+             body: "Build failed.\n\nCheck logs: ${env.BUILD_URL}"
         }
     }
 }
