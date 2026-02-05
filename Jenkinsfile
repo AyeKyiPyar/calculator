@@ -82,7 +82,7 @@ pipeline {
                 // Stop old container if exists, then run new one
                 sh """
                 docker rm -f ${IMAGE_NAME} || true
-                docker run --name ${IMAGE_NAME} --name mynet -d -p 8082:8080 ${IMAGE_NAME}:${BUILD_TAG_VERSION}
+                docker run --name ${IMAGE_NAME} --network mynet -d -p 8082:8080 ${IMAGE_NAME}:${BUILD_TAG_VERSION}
                 """
             }
         }
