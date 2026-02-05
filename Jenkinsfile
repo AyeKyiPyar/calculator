@@ -91,6 +91,9 @@ pipeline {
     post {
         success {
             echo "✅ Maven CI/CD Pipeline completed successfully"
+            mail to: 'ayekyipyarshwe@gmail.com',
+             subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+             body: "Build succeeded.\n\nURL: ${env.BUILD_URL}"
         }
         failure {
             echo "❌ Maven CI/CD Pipeline failed"
