@@ -86,7 +86,7 @@ pipeline {
                     echo "No existing container found"
                 fi
         
-                docker run -d --name ${CONTAINER_NAME} -p 8082:8080 ${IMAGE_NAME}:${BUILD_TAG_VERSION}
+                docker run -d --name ${CONTAINER_NAME} -p 8082:8080 ${IMAGE_NAME}:${BUILD_TAG_VERSION} || true
                 '''
             }
         }
