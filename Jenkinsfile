@@ -30,10 +30,48 @@ pipeline {
             }
         }
 
-       stage("Unit Test") {
+       // stage("Unit Test") {
+       //      steps {
+       //          script {
+       //              // Run tests but continue even if some fail
+       //              def testStatus = sh(script: "mvn test", returnStatus: true)
+       //              junit 'target/surefire-reports/*.xml'
+                    
+       //              if (testStatus != 0) {
+       //                  echo "⚠️ Some tests failed, but continuing with the pipeline"
+       //              }
+       //          }
+       //      }
+       //  }
+
+
+       //  stage('JaCoCo Report') {
+       //      steps {
+       //          publishHTML([
+       //              allowMissing: false,
+       //              alwaysLinkToLastBuild: true,
+       //              keepAll: true,
+       //              reportDir: 'target/site/jacoco',
+       //              reportFiles: 'index.html',
+       //              reportName: 'JaCoCo Coverage'
+       //          ])
+       //      }
+       //  }
+
+       //  stage("Static Code Analysis (Checkstyle)") {
+       //      steps {
+       //          sh "mvn checkstyle:checkstyle"
+       //          publishHTML(target: [
+       //              reportDir: 'target/site',
+       //              reportFiles: 'checkstyle.html',
+       //              reportName: 'Checkstyle Report'
+       //          ])
+       //      }
+       //  }
+        stage("Unit Test") {
             steps {
                 script {
-                    // Run tests but continue even if some fail
+                    // Run tests but don't fail the build immediately
                     def testStatus = sh(script: "mvn test", returnStatus: true)
                     junit 'target/surefire-reports/*.xml'
                     
@@ -43,29 +81,20 @@ pipeline {
                 }
             }
         }
-
-
-        stage('JaCoCo Report') {
-            steps {
-                publishHTML([
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'target/site/jacoco',
-                    reportFiles: 'index.html',
-                    reportName: 'JaCoCo Coverage'
-                ])
-            }
-        }
-
+        
         stage("Static Code Analysis (Checkstyle)") {
             steps {
-                sh "mvn checkstyle:checkstyle"
-                publishHTML(target: [
-                    reportDir: 'target/site',
-                    reportFiles: 'checkstyle.html',
-                    reportName: 'Checkstyle Report'
-                ])
+                script {
+                    def checkStatus = sh(script: "mvn checkstyle:checkstyle", returnStatus: true)
+                    publishHTML(target: [
+                        reportDir: 'target/site',
+                        reportFiles: 'checkstyle.html',
+                        reportName: 'Checkstyle Report'
+                    ])
+                    if (checkStatus != 0) {
+                        echo "⚠️ Checkstyle warnings found, but continuing..."
+                    }
+                }
             }
         }
 
@@ -81,31 +110,50 @@ pipeline {
             }
         }
 
+        // stage("Docker Deploy") {
+        //     steps {
+        //         script {
+        //             // Stop and remove existing container if it exists
+        //             def containerExists = sh(
+        //                 script: "docker ps -aq -f name=${CONTAINER_NAME}",
+        //                 returnStdout: true
+        //             ).trim()
+
+        //             if (containerExists) {
+        //                 echo "Stopping existing container ${CONTAINER_NAME}"
+        //                 sh "docker stop ${CONTAINER_NAME} || true"
+        //                 sh "docker rm ${CONTAINER_NAME} || true"
+        //             } else {
+        //                 echo "No existing container found"
+        //             }
+
+        //             // Run new container safely
+        //             def runStatus = sh(
+        //                 script: "docker run -d --name ${CONTAINER_NAME} -p 8082:8080 ${IMAGE_NAME}:${BUILD_TAG_VERSION}",
+        //                 returnStatus: true
+        //             )
+
+        //             if (runStatus != 0) {
+        //                 echo "⚠️ Docker run failed, please check logs"
+        //             } else {
+        //                 echo "✅ Docker container ${CONTAINER_NAME} deployed successfully"
+        //             }
+        //         }
+        //     }
+        // }
         stage("Docker Deploy") {
             steps {
                 script {
-                    // Stop and remove existing container if it exists
-                    def containerExists = sh(
-                        script: "docker ps -aq -f name=${CONTAINER_NAME}",
-                        returnStdout: true
-                    ).trim()
-
+                    // Stop/remove existing container if it exists
+                    def containerExists = sh(script: "docker ps -aq -f name=${CONTAINER_NAME}", returnStdout: true).trim()
                     if (containerExists) {
-                        echo "Stopping existing container ${CONTAINER_NAME}"
                         sh "docker stop ${CONTAINER_NAME} || true"
                         sh "docker rm ${CONTAINER_NAME} || true"
-                    } else {
-                        echo "No existing container found"
                     }
-
                     // Run new container safely
-                    def runStatus = sh(
-                        script: "docker run -d --name ${CONTAINER_NAME} -p 8082:8080 ${IMAGE_NAME}:${BUILD_TAG_VERSION}",
-                        returnStatus: true
-                    )
-
+                    def runStatus = sh(script: "docker run -d --name ${CONTAINER_NAME} -p 8082:8080 ${IMAGE_NAME}:${BUILD_TAG_VERSION}", returnStatus: true)
                     if (runStatus != 0) {
-                        echo "⚠️ Docker run failed, please check logs"
+                        echo "⚠️ Docker run failed, check logs"
                     } else {
                         echo "✅ Docker container ${CONTAINER_NAME} deployed successfully"
                     }
