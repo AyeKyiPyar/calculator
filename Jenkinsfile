@@ -29,34 +29,7 @@ pipeline {
                 sh "mvn compile"
             }
         }
-
-       // stage("Unit Test") {
-       //      steps {
-       //          script {
-       //              // Run tests but continue even if some fail
-       //              def testStatus = sh(script: "mvn test", returnStatus: true)
-       //              junit 'target/surefire-reports/*.xml'
-                    
-       //              if (testStatus != 0) {
-       //                  echo "⚠️ Some tests failed, but continuing with the pipeline"
-       //              }
-       //          }
-       //      }
-       //  }
-
-
-      
-
-       //  stage("Static Code Analysis (Checkstyle)") {
-       //      steps {
-       //          sh "mvn checkstyle:checkstyle"
-       //          publishHTML(target: [
-       //              reportDir: 'target/site',
-       //              reportFiles: 'checkstyle.html',
-       //              reportName: 'Checkstyle Report'
-       //          ])
-       //      }
-       //  }
+        
         stage("Unit Test") {
             steps {
                 script {
@@ -111,38 +84,7 @@ pipeline {
                 sh "docker build --no-cache -t ${IMAGE_NAME}:${BUILD_TAG_VERSION} ."
             }
         }
-
-        // stage("Docker Deploy") {
-        //     steps {
-        //         script {
-        //             // Stop and remove existing container if it exists
-        //             def containerExists = sh(
-        //                 script: "docker ps -aq -f name=${CONTAINER_NAME}",
-        //                 returnStdout: true
-        //             ).trim()
-
-        //             if (containerExists) {
-        //                 echo "Stopping existing container ${CONTAINER_NAME}"
-        //                 sh "docker stop ${CONTAINER_NAME} || true"
-        //                 sh "docker rm ${CONTAINER_NAME} || true"
-        //             } else {
-        //                 echo "No existing container found"
-        //             }
-
-        //             // Run new container safely
-        //             def runStatus = sh(
-        //                 script: "docker run -d --name ${CONTAINER_NAME} -p 8082:8080 ${IMAGE_NAME}:${BUILD_TAG_VERSION}",
-        //                 returnStatus: true
-        //             )
-
-        //             if (runStatus != 0) {
-        //                 echo "⚠️ Docker run failed, please check logs"
-        //             } else {
-        //                 echo "✅ Docker container ${CONTAINER_NAME} deployed successfully"
-        //             }
-        //         }
-        //     }
-        // }
+        
         stage("Docker Deploy") {
             steps {
                 script {
