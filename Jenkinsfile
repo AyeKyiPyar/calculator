@@ -78,8 +78,6 @@ pipeline {
         stage("Docker Deploy") {
             steps {
                 sh """
-                docker stop ${CONTAINER_NAME} || true
-                docker rm ${CONTAINER_NAME} || true
                 docker run -d --name ${CONTAINER_NAME} -p 8082:8080 ${IMAGE_NAME}:${BUILD_TAG_VERSION}
                 """
             }
