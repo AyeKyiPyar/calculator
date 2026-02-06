@@ -75,25 +75,22 @@ pipeline {
             }
         }
 
-      stage('Docker Deploy') {
+      stage("Docker Deploy") {
             steps {
-                echo "Stopping and removing old container if exists..."
-                sh """
-                # Stop and remove old container safely
-                CONTAINER_ID=\$(docker ps -aq -f name=${CONTAINER_NAME})
-                if [ ! -z "\$CONTAINER_ID" ]; then
-                    echo "Stopping container ${CONTAINER_NAME}"
-                    docker stop \$CONTAINER_ID
-                    echo "Removing container ${CONTAINER_NAME}"
-                    docker rm \$CONTAINER_ID
+                sh '''
+                if [ "$(docker ps -aq -f name=${CONTAINER_NAME})" ]; then
+                    echo "Stopping existing container ${CONTAINER_NAME}"
+                    docker stop ${CONTAINER_NAME}
+                    docker rm ${CONTAINER_NAME}
+                else
+                    echo "No existing container found"
                 fi
-
-                # Run new container
-                echo "Starting new container ${CONTAINER_NAME}"
-                docker run -d --name ${CONTAINER_NAME} -p ${PORT_MAPPING} ${IMAGE_NAME}:latest
-                """
+        
+                docker run -d --name ${CONTAINER_NAME} -p 8082:8080 ${IMAGE_NAME}:${BUILD_TAG_VERSION}
+                '''
             }
         }
+
     }
 
     post {
