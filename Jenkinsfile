@@ -75,13 +75,22 @@ pipeline {
             }
         }
 
-        stage("Docker Deploy") {
+       stage("Docker Deploy") {
             steps {
-                sh """
+                sh '''
+                if [ "$(docker ps -aq -f name=${CONTAINER_NAME})" ]; then
+                    echo "Stopping existing container ${CONTAINER_NAME}"
+                    docker stop ${CONTAINER_NAME}
+                    docker rm ${CONTAINER_NAME}
+                else
+                    echo "No existing container found"
+                fi
+        
                 docker run -d --name ${CONTAINER_NAME} -p 8082:8080 ${IMAGE_NAME}:${BUILD_TAG_VERSION}
-                """
+                '''
             }
         }
+
     }
 
     post {
