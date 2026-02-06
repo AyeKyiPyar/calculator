@@ -12,14 +12,14 @@ pipeline {
 
     environment {
         IMAGE_NAME = "calculator"
+        CONTAINER_NAME = "calculator-container"
         BUILD_TAG_VERSION = "${BUILD_NUMBER}"
     }
 
     stages {
-        
+
         stage('Checkout') {
             steps {
-                // Pull code from Git
                 git branch: 'main', url: 'https://github.com/AyeKyiPyar/calculator.git'
             }
         }
@@ -30,9 +30,8 @@ pipeline {
             }
         }
 
-          stage("Unit Test") {
+        stage("Unit Test") {
             steps {
-                // Run unit tests and collect results for Jenkins
                 sh "mvn test"
                 junit 'target/surefire-reports/*.xml'
             }
@@ -40,7 +39,6 @@ pipeline {
 
         stage('JaCoCo Report') {
             steps {
-                // Publish JaCoCo HTML report in Jenkins
                 publishHTML([
                     allowMissing: false,
                     alwaysLinkToLastBuild: true,
@@ -51,6 +49,7 @@ pipeline {
                 ])
             }
         }
+
         stage("Static Code Analysis (Checkstyle)") {
             steps {
                 sh "mvn checkstyle:checkstyle"
@@ -61,28 +60,9 @@ pipeline {
                 ])
             }
         }
-        // stage('SonarQube Analysis') {
-        //     steps {
-        //         withSonarQubeEnv('sonarqube') {
-        //             sh '''
-        //               mvn sonar:sonar \
-        //               -Dsonar.projectKey=my-project \
-        //               -Dsonar.projectName=my-project
-        //             '''
-        //         }
-        //     }
-        // }
 
-        // stage('Quality Gate') {
-        //     steps {
-        //         timeout(time: 1, unit: 'MINUTES') {
-        //             waitForQualityGate abortPipeline: true
-        //         }
-        //     }
-        // }
         stage("Build Jar") {
             steps {
-                // Package without cleaning to avoid deleting reports
                 sh "mvn package -DskipTests"
             }
         }
@@ -97,11 +77,10 @@ pipeline {
 
         stage("Docker Deploy") {
             steps {
-                // Stop old container if exists, then run new one
                 sh """
                 docker stop ${CONTAINER_NAME} || true
                 docker rm ${CONTAINER_NAME} || true
-                docker run --name ${IMAGE_NAME} -d -p 8082:8080 ${IMAGE_NAME}:${BUILD_TAG_VERSION}
+                docker run -d --name ${CONTAINER_NAME} -p 8082:8080 ${IMAGE_NAME}:${BUILD_TAG_VERSION}
                 """
             }
         }
@@ -110,15 +89,9 @@ pipeline {
     post {
         success {
             echo "✅ Maven CI/CD Pipeline completed successfully"
-            // mail to: 'ayekyipyarshwe@gmail.com',
-            //  subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-            //  body: "Build succeeded.\n\nURL: ${env.BUILD_URL}"
         }
         failure {
             echo "❌ Maven CI/CD Pipeline failed"
-            // mail to: 'ayekyipyarshwe@gmail.com',
-            //  subject: "FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-            //  body: "Build failed.\n\nCheck logs: ${env.BUILD_URL}"
         }
     }
 }
