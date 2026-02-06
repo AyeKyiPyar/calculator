@@ -101,7 +101,7 @@ pipeline {
                 sh """
                 docker stop ${CONTAINER_NAME} || true
                 docker rm ${CONTAINER_NAME} || true
-                docker run --name ${IMAGE_NAME} --network mynet -d -p 8082:8080 ${IMAGE_NAME}:${BUILD_TAG_VERSION}
+                docker run --name ${IMAGE_NAME} -d -p 8082:8080 ${IMAGE_NAME}:${BUILD_TAG_VERSION}
                 """
             }
         }
