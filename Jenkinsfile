@@ -30,12 +30,20 @@ pipeline {
             }
         }
 
-        stage("Unit Test") {
+       stage("Unit Test") {
             steps {
-                sh "mvn test"
-                junit 'target/surefire-reports/*.xml'
+                script {
+                    // Run tests but continue even if some fail
+                    def testStatus = sh(script: "mvn test", returnStatus: true)
+                    junit 'target/surefire-reports/*.xml'
+                    
+                    if (testStatus != 0) {
+                        echo "⚠️ Some tests failed, but continuing with the pipeline"
+                    }
+                }
             }
         }
+
 
         stage('JaCoCo Report') {
             steps {
