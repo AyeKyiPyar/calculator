@@ -61,16 +61,18 @@ pipeline {
                 ])
             }
         }
-         stage('SonarQube Analysis') {
+        stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('sonarqube') {
-                    sh """
+                    sh '''
                       mvn sonar:sonar \
-                      -Dsonar.projectKey=${SONAR_PROJECT_KEY}
-                    """
+                      -Dsonar.projectKey=my-project \
+                      -Dsonar.projectName=my-project
+                    '''
                 }
             }
         }
+
         // stage('Quality Gate') {
         //     steps {
         //         timeout(time: 1, unit: 'MINUTES') {
