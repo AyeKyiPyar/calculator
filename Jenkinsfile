@@ -90,7 +90,7 @@ pipeline {
         stage("Docker Build") {
             steps {
                 sh """
-                docker build -t ${IMAGE_NAME}:${BUILD_TAG_VERSION} .
+                docker build --no-cache -t ${IMAGE_NAME}:${BUILD_TAG_VERSION} .
                 """
             }
         }
