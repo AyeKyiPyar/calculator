@@ -45,18 +45,18 @@ pipeline {
        //  }
 
 
-       //  stage('JaCoCo Report') {
-       //      steps {
-       //          publishHTML([
-       //              allowMissing: false,
-       //              alwaysLinkToLastBuild: true,
-       //              keepAll: true,
-       //              reportDir: 'target/site/jacoco',
-       //              reportFiles: 'index.html',
-       //              reportName: 'JaCoCo Coverage'
-       //          ])
-       //      }
-       //  }
+        stage('JaCoCo Report') {
+            steps {
+                publishHTML([
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'target/site/jacoco',
+                    reportFiles: 'index.html',
+                    reportName: 'JaCoCo Coverage'
+                ])
+            }
+        }
 
        //  stage("Static Code Analysis (Checkstyle)") {
        //      steps {
