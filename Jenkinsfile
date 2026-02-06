@@ -69,25 +69,39 @@ pipeline {
 
         stage("Docker Build") {
             steps {
-                sh """
-                docker build --no-cache -t ${IMAGE_NAME}:${BUILD_TAG_VERSION} .
-                """
+                sh "docker build --no-cache -t ${IMAGE_NAME}:${BUILD_TAG_VERSION} ."
             }
         }
 
-      stage("Docker Deploy") {
+        stage("Docker Deploy") {
             steps {
-                sh '''
-                if [ "$(docker ps -aq -f name=${CONTAINER_NAME})" ]; then
-                    echo "Stopping existing container ${CONTAINER_NAME}"
-                    docker stop ${CONTAINER_NAME} || true
-                    docker rm ${CONTAINER_NAME} || true
-                else
-                    echo "No existing container found"
-                fi
-        
-                docker run -d --name ${CONTAINER_NAME} -p 8082:8080 ${IMAGE_NAME}:${BUILD_TAG_VERSION} || true
-                '''
+                script {
+                    // Stop and remove existing container if it exists
+                    def containerExists = sh(
+                        script: "docker ps -aq -f name=${CONTAINER_NAME}",
+                        returnStdout: true
+                    ).trim()
+
+                    if (containerExists) {
+                        echo "Stopping existing container ${CONTAINER_NAME}"
+                        sh "docker stop ${CONTAINER_NAME} || true"
+                        sh "docker rm ${CONTAINER_NAME} || true"
+                    } else {
+                        echo "No existing container found"
+                    }
+
+                    // Run new container safely
+                    def runStatus = sh(
+                        script: "docker run -d --name ${CONTAINER_NAME} -p 8082:8080 ${IMAGE_NAME}:${BUILD_TAG_VERSION}",
+                        returnStatus: true
+                    )
+
+                    if (runStatus != 0) {
+                        echo "⚠️ Docker run failed, please check logs"
+                    } else {
+                        echo "✅ Docker container ${CONTAINER_NAME} deployed successfully"
+                    }
+                }
             }
         }
 
