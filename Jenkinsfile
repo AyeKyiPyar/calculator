@@ -80,8 +80,8 @@ pipeline {
                 sh '''
                 if [ "$(docker ps -aq -f name=${CONTAINER_NAME})" ]; then
                     echo "Stopping existing container ${CONTAINER_NAME}"
-                    docker stop ${CONTAINER_NAME}
-                    docker rm ${CONTAINER_NAME}
+                    docker stop ${CONTAINER_NAME} || true
+                    docker rm ${CONTAINER_NAME} || true
                 else
                     echo "No existing container found"
                 fi
