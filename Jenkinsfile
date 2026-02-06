@@ -61,6 +61,16 @@ pipeline {
                 ])
             }
         }
+         stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh """
+                      mvn sonar:sonar \
+                      -Dsonar.projectKey=${SONAR_PROJECT_KEY}
+                    """
+                }
+            }
+        }
 
         stage("Build Jar") {
             steps {
