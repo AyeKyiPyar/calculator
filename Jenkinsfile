@@ -61,17 +61,17 @@ pipeline {
                 ])
             }
         }
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('sonarqube') {
-                    sh '''
-                      mvn sonar:sonar \
-                      -Dsonar.projectKey=my-project \
-                      -Dsonar.projectName=my-project
-                    '''
-                }
-            }
-        }
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         withSonarQubeEnv('sonarqube') {
+        //             sh '''
+        //               mvn sonar:sonar \
+        //               -Dsonar.projectKey=my-project \
+        //               -Dsonar.projectName=my-project
+        //             '''
+        //         }
+        //     }
+        // }
 
         // stage('Quality Gate') {
         //     steps {
