@@ -137,7 +137,7 @@ pipeline {
     
     Best Regards,
     Jenkins""",
-                to: "kyipyarshweaye@gmail.com",
+                to: "ayekyipyarshwe@gmail.com",
                 from: "ayekyipyarshwe@gmail.com",
                 mimeType: 'text/html'
             )
