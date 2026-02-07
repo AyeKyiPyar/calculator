@@ -125,7 +125,7 @@ pipeline {
 
     post {
     success {
-        email(
+        emailext(
             subject: "✅ Maven CI/CD Pipeline Success: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
             body: """Hello Team,
 
@@ -141,7 +141,7 @@ pipeline {
                     )
     }
     failure {
-        email(
+        emailext(
             subject: "❌ Maven CI/CD Pipeline Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
             body: """Hello Team,
 
