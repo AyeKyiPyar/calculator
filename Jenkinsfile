@@ -124,40 +124,47 @@ pipeline {
     // }
 
     post {
-    success {
-        emailext(
-            subject: "✅ Maven CI/CD Pipeline Success: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-            body: """Hello Team,
-
-            The Maven CI/CD Pipeline has completed successfully.
-            
-            Job: ${env.JOB_NAME}
-            Build Number: ${env.BUILD_NUMBER}
-            Build URL: ${env.BUILD_URL}
-            
-            Best Regards,
-            Jenkins""",
-                        to: "kyipyarshweaye@gmail.com"
-                    )
-    }
-    failure {
-        emailext(
-            subject: "❌ Maven CI/CD Pipeline Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-            body: """Hello Team,
-
-            The Maven CI/CD Pipeline has failed.
-            
-            Job: ${env.JOB_NAME}
-            Build Number: ${env.BUILD_NUMBER}
-            Build URL: ${env.BUILD_URL}
-            
-            Please check the logs and fix the issue.
-            
-            Best Regards,
-            Jenkins""",
-                        to: "ayekyipyarshwe@gmail.com"
-                    )
-                }
+            success {
+                emailext(
+                    subject: "✅ Maven CI/CD Pipeline Success: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                    body: """Hello Team,
+        
+                    The Maven CI/CD Pipeline has completed successfully.
+                    
+                    Job: ${env.JOB_NAME}
+                    Build Number: ${env.BUILD_NUMBER}
+                    Build URL: ${env.BUILD_URL}
+                    
+                    Best Regards,
+                    Jenkins""",
+                    to: "kyipyarshweaye@gmail.com",
+                    from: "your.email@gmail.com",
+                    credentialsId: "gmail-credentials",
+                    mimeType: 'text/html'
+                )
             }
+            failure {
+                emailext(
+                    subject: "❌ Maven CI/CD Pipeline Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                    body: """Hello Team,
+        
+                    The Maven CI/CD Pipeline has failed.
+                    
+                    Job: ${env.JOB_NAME}
+                    Build Number: ${env.BUILD_NUMBER}
+                    Build URL: ${env.BUILD_URL}
+                    
+                    Please check the logs and fix the issue.
+                    
+                    Best Regards,
+                    Jenkins""",
+                    to: "ayekyipyarshwe@gmail.com",
+                    from: "your.email@gmail.com",
+                    credentialsId: "gmail-credentials",
+                    mimeType: 'text/html'
+                )
+            }
+        }
+
 
 }
