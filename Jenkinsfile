@@ -155,7 +155,7 @@ pipeline {
             
             Best Regards,
             Jenkins""",
-                        to: "team@example.com"
+                        to: "ayekyipyarshwe@gmail.com"
                     )
                 }
             }
