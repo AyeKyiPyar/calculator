@@ -137,7 +137,7 @@ pipeline {
             
             Best Regards,
             Jenkins""",
-                        to: "ayekyipyarshwe@gmail.com"
+                        to: "kyipyarshweaye@gmail.com"
                     )
     }
     failure {
