@@ -197,8 +197,8 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = "calculator"
-        CONTAINER_NAME = "calculator-container"
+        IMAGE_NAME = "akps-calculator"
+        CONTAINER_NAME = "akps-calculator-container"
         BUILD_TAG_VERSION = "${BUILD_NUMBER}"
     }
 
