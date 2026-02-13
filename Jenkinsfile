@@ -304,7 +304,7 @@ pipeline {
         stage("Acceptance test") {
                 steps {
                 sleep 60
-                sh "chmod +x acceptance_test.sh && ./acceptance_test.sh 127.0.0.1"
+                sh "chmod +x acceptance_test.sh && ./acceptance_test.sh"
                 }
         }
     }
