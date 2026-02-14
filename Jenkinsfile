@@ -274,16 +274,26 @@ pipeline {
             }
         }
 
+        stage("Docker Login") {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                }
+            }
+        }
+        
         stage("Docker Build") {
             steps {
                 sh "docker build --no-cache -t ${IMAGE_NAME}:${BUILD_TAG_VERSION} ."
             }
         }
-        stage("Docker Push"){
-                steps{
-                        sh "docker push ${IMAGE_NAME}:${BUILD_TAG_VERSION}"
-                }
+        
+        stage("Docker Push") {
+            steps {
+                sh "docker push ${IMAGE_NAME}:${BUILD_TAG_VERSION}"
+            }
         }
+
         stage("Docker Deploy") {
             steps {
                 script {
