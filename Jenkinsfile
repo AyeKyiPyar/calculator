@@ -279,7 +279,11 @@ pipeline {
                 sh "docker build --no-cache -t ${IMAGE_NAME}:${BUILD_TAG_VERSION} ."
             }
         }
-        
+        stage("Docker Push"){
+                steps{
+                        sh "docker push akps/calculator"
+                }
+        }
         stage("Docker Deploy") {
             steps {
                 script {
