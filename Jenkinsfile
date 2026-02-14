@@ -281,7 +281,7 @@ pipeline {
         }
         stage("Docker Push"){
                 steps{
-                        sh "docker push akps/calculator"
+                        sh "docker push ${IMAGE_NAME}:${BUILD_TAG_VERSION}"
                 }
         }
         stage("Docker Deploy") {
