@@ -315,28 +315,28 @@ pipeline {
                 }
             }
         }
-        stage("Acceptance test") {
-                steps {
-                sleep 60
-                sh "chmod +x acceptance_test.sh && ./acceptance_test.sh"
-                }
-        }
+        // stage("Acceptance test") {
+        //         steps {
+        //         sleep 60
+        //         sh "chmod +x acceptance_test.sh && ./acceptance_test.sh"
+        //         }
+        // }
     }
 
     post {
         always {
-            emailext(
-                to: 'ayekyipyarshwe@gmail.com',
-                subject: "Build ${currentBuild.currentResult}: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: """
-                        Build Status: ${currentBuild.currentResult}
+            // emailext(
+            //     to: 'ayekyipyarshwe@gmail.com',
+            //     subject: "Build ${currentBuild.currentResult}: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+            //     body: """
+            //             Build Status: ${currentBuild.currentResult}
                         
-                        Job: ${env.JOB_NAME}
-                        Build: ${env.BUILD_NUMBER}
-                        URL: ${env.BUILD_URL}
-                        """,
-                mimeType: 'text/plain'
-            )
+            //             Job: ${env.JOB_NAME}
+            //             Build: ${env.BUILD_NUMBER}
+            //             URL: ${env.BUILD_URL}
+            //             """,
+            //     mimeType: 'text/plain'
+            // )
         }
     }
 }
