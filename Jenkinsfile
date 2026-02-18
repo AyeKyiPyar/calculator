@@ -324,19 +324,25 @@ pipeline {
     }
 
     post {
-        always {
-            // emailext(
-            //     to: 'ayekyipyarshwe@gmail.com',
-            //     subject: "Build ${currentBuild.currentResult}: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-            //     body: """
-            //             Build Status: ${currentBuild.currentResult}
+        // always {
+        //     emailext(
+        //         to: 'ayekyipyarshwe@gmail.com',
+        //         subject: "Build ${currentBuild.currentResult}: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+        //         body: """
+        //                 Build Status: ${currentBuild.currentResult}
                         
-            //             Job: ${env.JOB_NAME}
-            //             Build: ${env.BUILD_NUMBER}
-            //             URL: ${env.BUILD_URL}
-            //             """,
-            //     mimeType: 'text/plain'
-            // )
+        //                 Job: ${env.JOB_NAME}
+        //                 Build: ${env.BUILD_NUMBER}
+        //                 URL: ${env.BUILD_URL}
+        //                 """,
+        //         mimeType: 'text/plain'
+        //     )
+        // }
+        success {
+            echo "✅ Maven CI/CD Pipeline completed successfully"
+        }
+        failure {
+            echo "❌ Maven CI/CD Pipeline failed"
         }
     }
 }
