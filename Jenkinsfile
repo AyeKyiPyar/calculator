@@ -288,11 +288,11 @@ pipeline {
             }
         }
         
-        stage("Docker Push") {
-            steps {
-                sh "docker push ${IMAGE_NAME}:${BUILD_TAG_VERSION}"
-            }
-        }
+        // stage("Docker Push") {
+        //     steps {
+        //         sh "docker push ${IMAGE_NAME}:${BUILD_TAG_VERSION}"
+        //     }
+        // }
 
         stage("Docker Deploy") {
             steps {
