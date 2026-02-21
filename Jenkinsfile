@@ -232,7 +232,7 @@ pipeline {
         stage('JaCoCo Report') {
             steps {
                 script {
-                    if (fileExists('target/site/jacoco/index.html')) {
+                   
                         publishHTML([
                             allowMissing: false,
                             alwaysLinkToLastBuild: true,
@@ -241,9 +241,7 @@ pipeline {
                             reportFiles: 'index.html',
                             reportName: 'JaCoCo Coverage'
                         ])
-                    } else {
-                        echo "⚠️ JaCoCo report not found"
-                    }
+                   
                 }
             }
         }
