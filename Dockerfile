@@ -1,5 +1,5 @@
 # Use specific image version or digest
-FROM eclipse-temurin:21-jdk@sha256:<digest>
+FROM eclipse-temurin:21-jdk
 
 # Create a non-root user
 RUN useradd -m appuser
