@@ -365,6 +365,8 @@ pipeline {
         IMAGE_NAME = "akps-calculator"
         CONTAINER_NAME = "akps-calculator-container"
         VERSION = "${BUILD_NUMBER}"
+        SONAR_URL = "http://sonar:9000"
+        SONAR_TOKEN = credentials('akps-auth-token') // use Jenkins credentials
     }
 
     stages {
