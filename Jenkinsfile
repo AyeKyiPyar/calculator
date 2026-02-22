@@ -193,7 +193,7 @@ pipeline {
 
     tools {
         maven 'maven3.9'
-        java 'jdk21'
+        jdk 'jdk21'
     }
 
     environment {
