@@ -440,10 +440,10 @@ pipeline {
         }
         stage('SonarQube Analysis') {
             environment {
-                SCANNER_HOME = tool 'sonar-scanner'
+                SCANNER_HOME = tool 'sonar'
             }
             steps {
-                withSonarQubeEnv('sonar-server') {
+                withSonarQubeEnv('sonar') {
                     sh """
                     mvn sonar:sonar \
                       -Dsonar.projectKey=akps-calculator \
