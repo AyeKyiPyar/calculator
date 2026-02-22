@@ -8,6 +8,7 @@ class CalculatorJenkinsApplicationTests {
 
 	@Test
 	void contextLoads() {
+		System.out.println("Test starting.....");
 	}
 
 }
