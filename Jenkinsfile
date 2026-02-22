@@ -383,7 +383,32 @@ pipeline {
                     url: 'https://github.com/AyeKyiPyar/calculator.git'
             }
         }
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    echo "Running SonarQube analysis on Docker server..."
 
+                    // Run Sonar using Maven
+                    def status = sh(
+                        script: """
+                            mvn sonar:sonar \
+                            -Dsonar.host.url=${env.SONAR_URL} \
+                            -Dsonar.login=${env.SONAR_TOKEN} \
+                            -Dsonar.projectKey=akps-calculator \
+                            -Dsonar.projectName=akps-calculator \
+                            -Dsonar.sources=src/main/java
+                        """,
+                        returnStatus: true
+                    )
+
+                    if (status != 0) {
+                        echo "⚠️ SonarQube analysis failed (build will continue)"
+                    } else {
+                        echo "✅ SonarQube analysis completed successfully"
+                    }
+                }
+            }
+        }
         stage('Compile') {
             steps {
                 retry(2) {
