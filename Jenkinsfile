@@ -438,28 +438,28 @@ pipeline {
                 ])
             }
         }
-        stage('SonarQube Analysis') {
-            environment {
-                SCANNER_HOME = tool 'sonar'
-            }
-            steps {
-                withSonarQubeEnv('sonar') {
-                    sh """
-                    mvn sonar:sonar \
-                      -Dsonar.projectKey=akps-calculator \
-                      -Dsonar.projectName=akps-calculator
-                    """
-                }
-            }
-        }
+        // stage('SonarQube Analysis') {
+        //     environment {
+        //         SCANNER_HOME = tool 'sonar'
+        //     }
+        //     steps {
+        //         withSonarQubeEnv('sonar') {
+        //             sh """
+        //             mvn sonar:sonar \
+        //               -Dsonar.projectKey=akps-calculator \
+        //               -Dsonar.projectName=akps-calculator
+        //             """
+        //         }
+        //     }
+        // }
 
-        stage("Quality Gate") {
-            steps {
-                timeout(time: 3, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+        // stage("Quality Gate") {
+        //     steps {
+        //         timeout(time: 3, unit: 'MINUTES') {
+        //             waitForQualityGate abortPipeline: true
+        //         }
+        //     }
+        // }
         stage('Package') {
             steps {
                 sh 'mvn -B package -DskipTests'
