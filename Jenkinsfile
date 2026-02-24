@@ -524,6 +524,11 @@ pipeline {
     post {
         success {
             echo "✅ PIPELINE SUCCESS"
+                emailext(
+                to: 'ayekyipyarshwe@gmail.com',
+                subject: '✅ Build SUCCESS',
+                body: 'Build completed successfully.'
+             )
         }
 
         unstable {
