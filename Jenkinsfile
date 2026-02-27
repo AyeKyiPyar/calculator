@@ -32,11 +32,9 @@ pipeline {
             }
         }
 
-        stage('Compile') {
+        stage('Build') {
             steps {
-                retry(2) {
-                    sh 'mvn -B clean compile'
-                }
+                sh 'mvn -B clean compile'
             }
         }
 
@@ -51,56 +49,53 @@ pipeline {
             }
         }
 
-        stage('Checkstyle') {
-            steps {
-                script {
-                    def status = sh(script: "mvn checkstyle:checkstyle", returnStatus: true)
+        stage('Code Quality') {
+            parallel {
 
-                    publishHTML(target: [
-                        reportDir: 'target/site',
-                        reportFiles: 'checkstyle.html',
-                        reportName: 'Checkstyle Report'
-                    ])
-
-                    if (status != 0)
-                        unstable("Checkstyle issues found")
+                stage('Checkstyle') {
+                    steps {
+                        sh 'mvn checkstyle:checkstyle'
+                    }
+                    post {
+                        always {
+                            publishHTML([
+                                allowMissing: true,
+                                reportDir: 'target/site',
+                                reportFiles: 'checkstyle.html',
+                                reportName: 'Checkstyle Report'
+                            ])
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('Coverage Report') {
-            steps {
-                sh 'mvn jacoco:report'
-
-                publishHTML([
-                    allowMissing: true,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'target/site/jacoco',
-                    reportFiles: 'index.html',
-                    reportName: 'Coverage Report'
-                ])
+                stage('Coverage') {
+                    steps {
+                        sh 'mvn jacoco:report'
+                    }
+                    post {
+                        always {
+                            publishHTML([
+                                allowMissing: true,
+                                reportDir: 'target/site/jacoco',
+                                reportFiles: 'index.html',
+                                reportName: 'Coverage Report'
+                            ])
+                        }
+                    }
+                }
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
-                script {
-                    def status = sh(
-                        script: """
-                            mvn sonar:sonar \
-                            -Dsonar.host.url=${env.SONAR_URL} \
-                            -Dsonar.login=${env.SONAR_TOKEN} \
-                            -Dsonar.projectKey=akps-calculator \
-                            -Dsonar.projectName=akps-calculator \
-                            -Dsonar.sources=src/main/java
-                        """,
-                        returnStatus: true
-                    )
-
-                    if (status != 0)
-                        unstable("SonarQube analysis failed")
-                }
+                sh """
+                    mvn sonar:sonar \
+                    -Dsonar.host.url=${SONAR_URL} \
+                    -Dsonar.login=${SONAR_TOKEN} \
+                    -Dsonar.projectKey=akps-calculator \
+                    -Dsonar.projectName=akps-calculator \
+                    -Dsonar.sources=src/main/java
+                """
             }
         }
 
@@ -115,7 +110,6 @@ pipeline {
             steps {
                 sh """
                 docker build \
-                --cache-from ${IMAGE_NAME}:latest \
                 -t ${IMAGE_NAME}:${VERSION} \
                 -t ${IMAGE_NAME}:latest .
                 """
@@ -135,12 +129,38 @@ pipeline {
             }
         }
 
-       stage('Acceptance Test') {
-    steps {
-         sh 'chmod +x acceptance_test.sh'
-        sh './acceptance_test.sh 192.168.1.4'
-    }
-}
+        stage('Wait For App') {
+            steps {
+                sh '''
+                for i in {1..20}
+                do
+                  curl -s http://localhost:8082 && break
+                  echo "Waiting for app..."
+                  sleep 3
+                done
+                '''
+            }
+        }
+
+        stage('Acceptance Test') {
+            steps {
+                sh 'bash acceptance_test.sh 192.168.1.4'
+            }
+            post {
+                always {
+                    junit 'target/*.xml'
+
+                    publishHTML([
+                        allowMissing: true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'target',
+                        reportFiles: 'cucumber-report.html',
+                        reportName: 'Acceptance Report'
+                    ])
+                }
+            }
+        }
     }
 
     post {
@@ -148,17 +168,17 @@ pipeline {
             echo "✅ PIPELINE SUCCESS"
             emailext(
                 to: 'ayekyipyarshwe@gmail.com',
-                subject: '✅ Build SUCCESS',
-                body: 'Build completed successfully.'
+                subject: 'Build SUCCESS',
+                body: "Build #${BUILD_NUMBER} completed successfully."
             )
         }
-
-        
 
         failure {
             echo "❌ PIPELINE FAILED"
         }
 
-        
+        cleanup {
+            cleanWs()
+        }
     }
 }
