@@ -158,9 +158,7 @@ pipeline {
             )
         }
 
-        unstable {
-            echo "⚠️ PIPELINE UNSTABLE"
-        }
+        
 
         failure {
             echo "❌ PIPELINE FAILED"
