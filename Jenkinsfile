@@ -20,7 +20,7 @@ pipeline {
         CONTAINER_NAME = "akps-calculator-container"
         VERSION = "${BUILD_NUMBER}"
         SONAR_URL = "http://sonar:9000"
-        SONAR_TOKEN = credentials('akps-auth-token')
+        SONAR_TOKEN = credentials('auth-token')
     }
 
     stages {
