@@ -137,7 +137,7 @@ pipeline {
 
        stage('Acceptance Test') {
     steps {
-        sh './scripts/acceptance.sh 192.168.1.4'
+        sh './acceptance.sh 192.168.1.4'
     }
 }
     }
