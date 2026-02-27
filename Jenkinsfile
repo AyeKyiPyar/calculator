@@ -135,17 +135,11 @@ pipeline {
             }
         }
 
-        stage('Acceptance Tests') {
-            steps {
-                echo "Running acceptance tests against deployed container..."
-
-                // Example for Maven acceptance profile
-                sh 'mvn verify -P acceptance'
-
-                // Example alternative if using Postman/Newman
-                // sh 'newman run tests/acceptance_collection.json'
-            }
-        }
+       stage('Acceptance Test') {
+    steps {
+        sh './scripts/acceptance.sh 192.168.1.4'
+    }
+}
     }
 
     post {
