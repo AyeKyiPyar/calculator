@@ -137,6 +137,7 @@ pipeline {
 
        stage('Acceptance Test') {
     steps {
+         sh 'chmod +x acceptance_test.sh'
         sh './acceptance_test.sh 192.168.1.4'
     }
 }
