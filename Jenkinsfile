@@ -150,7 +150,7 @@ pipeline {
         stage('Acceptance Test') {
 		    steps {
 		        // Run your acceptance test script
-		        sh 'bash acceptance_test.sh'
+		        sh 'mvn verify -Pacceptance'
 		    }
 		    post {
 		        always {
