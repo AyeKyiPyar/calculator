@@ -12,7 +12,7 @@ import io.cucumber.java.en.When;
 public class StepDefinitions
 {
 	 // Default server if system property not set
-  private String server = System.getProperty("calculator.url", "http://localhost:8080");
+  private String server = System.getProperty("calculator.url", "http://localhost:8082");
   private RestTemplate restTemplate = new RestTemplate();
   private String a;
   private String b;
