@@ -4,6 +4,11 @@ pipeline {
     environment {
         DOCKER_IMAGE = "kyipyar/calculator:1.0"
     }
+    
+     tools {
+        maven 'maven3.9'
+    }
+
 
     stages {
 
