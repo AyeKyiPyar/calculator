@@ -12,9 +12,11 @@ pipeline {
     stages {
 
         stage('Checkout') {
-            steps {
-                git 'https://github.com/AyeKyiPyar/calculator.git'
+           steps {
+                git branch: 'main',
+                    url: 'https://github.com/AyeKyiPyar/calculator.git'
             }
+
         }
 
         stage('Build') {
