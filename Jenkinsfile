@@ -19,7 +19,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'mvn clean package -Dspring.profiles.active=test -DskipTests'
+                sh 'mvn clean package -DskipTests'
             }
         }
 
@@ -37,8 +37,7 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh 'kubectl apply -f k8s/hazelcast-deployment.yaml'
-                sh 'kubectl apply -f k8s/hazelcast-service.yaml'
+                sh 'kubectl apply -f k8s/hazelcast.yaml'
 
                 sh 'kubectl rollout status deployment/hazelcast'
 
