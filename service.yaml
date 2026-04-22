@@ -8,6 +8,6 @@ spec:
     app: calculator            # matches the Deployment pods
   ports:
     - protocol: TCP
-      port: 8080               # port inside the cluster
-      targetPort: 8080         # container port in pods
+      port: 8080              # port inside the cluster
+      targetPort: 8088         # container port in pods
       nodePort: 30080          # external port on localhost

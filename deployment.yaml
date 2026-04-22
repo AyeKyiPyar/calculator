@@ -11,18 +11,18 @@ spec:
     metadata:
       labels:
         app: calculator
+        label: label
     spec:
       containers:
       - name: calculator
-        image: leszko/calculator:latest
+        image: kyipyar/calculator:1.0
         ports:
         - containerPort: 8080
-
-        # 👉 PUT env HERE (inside container)
+# 👉 PUT env HERE (inside container)
         env:
         - name: SERVER_SERVLET_CONTEXT_PATH
           value: "/calculator"
         - name: SPRINGDOC_API_DOCS_PATH
           value: "/calculator/v3/api-docs"
         - name: SPRINGDOC_SWAGGER_UI_PATH
-          value: "/calculator/swagger-ui.html"
+          value: "/swagger-ui.html"
