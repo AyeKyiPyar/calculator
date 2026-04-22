@@ -31,12 +31,18 @@ pipeline {
             }
         }
 
-        stage('Push Image') {
-            steps {
-                sh 'docker push $IMAGE'
-            }
-        }
-
+      stage('Push to Docker Hub') {
+		    steps {
+		        withCredentials([usernamePassword(
+		            credentialsId: 'dockerhub',
+		            usernameVariable: 'USER',
+		            passwordVariable: 'PASS'
+		        )]) {
+		            sh 'docker login -u $USER -p $PASS'
+		            sh 'docker push kyipyar/calculator:1.0'
+		        }
+		    }
+		}
         stage('Deploy to Kubernetes') {
             steps {
                 sh 'kubectl apply -f k8s/hazelcast.yaml'
