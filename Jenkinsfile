@@ -4,6 +4,10 @@ pipeline {
     environment {
         IMAGE = "kyipyar/calculator:1.0"
     }
+    
+     tools {
+        maven 'maven3.9'
+    }
 
     stages {
 
