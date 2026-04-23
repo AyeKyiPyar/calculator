@@ -43,7 +43,7 @@ pipeline {
 		        }
 		    }
 		}
-        stage('Deploy to Kubernetes') {
+        /*stage('Deploy to Kubernetes') {
             steps {
                 sh 'kubectl apply -f hazelcast.yaml --validate=false'
 
@@ -52,6 +52,13 @@ pipeline {
                 sh 'kubectl apply -f deployment.yaml'
                 sh 'kubectl apply -f service.yaml'
             }
-        }
+        }*/
+        stage('Test Kubernetes') {
+		    steps {
+		        withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+		            sh 'kubectl get nodes'
+		        }
+		    }
+		}
     }
 }
