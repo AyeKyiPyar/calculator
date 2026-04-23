@@ -48,9 +48,10 @@ pipeline {
                 /*sh 'kubectl apply -f hazelcast.yaml --validate=false'
 
                 sh 'kubectl rollout status deployment/hazelcast'*/
-
-                sh 'kubectl apply -f deployment.yaml'
-                sh 'kubectl apply -f service.yaml'
+				withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]){}
+                	sh 'kubectl apply -f deployment.yaml'
+                	sh 'kubectl apply -f service.yaml'
+                }
             }
         }
        /* stage('Test Kubernetes') {
