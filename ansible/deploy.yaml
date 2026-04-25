@@ -1,9 +1,12 @@
 - name: Deploy to Kubernetes
   hosts: all
 
+  environment:
+    KUBECONFIG: /var/jenkins_home/.kube/config
+
   tasks:
     - name: Apply deployment
-      command: kubectl apply -f ../deployment.yaml
+      shell: kubectl apply -f ../deployment.yaml
 
     - name: Apply service
-      command: kubectl apply -f ../service.yaml
+      shell: kubectl apply -f ../service.yaml
