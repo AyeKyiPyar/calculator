@@ -3,7 +3,7 @@
 
   tasks:
     - name: Apply deployment
-      command: kubectl apply -f deployment.yaml
+      command: kubectl apply -f ../deployment.yaml
 
     - name: Apply service
-      command: kubectl apply -f service.yaml
+      command: kubectl apply -f ../service.yaml
