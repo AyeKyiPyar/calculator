@@ -49,7 +49,7 @@ pipeline {
                 sh 'ansible-playbook ansible/deploy.yaml -i ansible/inventory'
             }
         }
-    }
+    
         /*stage('Deploy to Kubernetes') {
             steps {
                 sh 'kubectl apply -f hazelcast.yaml --validate=false'
