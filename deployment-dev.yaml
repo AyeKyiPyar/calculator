@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calculator-deployment
+
+spec:
+  replicas: 3
+
+  selector:
+    matchLabels:
+      app: calculator
+
+  template:
+    metadata:
+      labels:
+        app: calculator
+
+    spec:
+      containers:
+        - name: calculator
+          image: kyipyar/calculator:1.0
+
+          imagePullPolicy: Always
+
+          ports:
+            - containerPort: 8080
+
+          env:
+            - name: SERVER_SERVLET_CONTEXT_PATH
+              value: "/calculator"
+
+            - name: SPRINGDOC_API_DOCS_PATH
+              value: "/calculator/v3/api-docs"
+
+            - name: SPRINGDOC_SWAGGER_UI_PATH
+              value: "/swagger-ui.html"
+
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+
+          readinessProbe:
+            httpGet:
+              path: /calculator/actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /calculator/actuator/health
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 20
