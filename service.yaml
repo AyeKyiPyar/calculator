@@ -10,4 +10,4 @@ spec:
     - protocol: TCP
       port: 8080              # port inside the cluster
       targetPort: 8080         # container port in pods
-      nodePort: 30080          # external port on localhost
+      nodePort: 30081          # external port on localhost
